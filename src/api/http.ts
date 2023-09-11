@@ -1,40 +1,23 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
-const BASE_URL =
-  process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOY_URL : process.env.REACT_APP_DEV_URL;
-class Http {
-  axiosInstance: AxiosInstance;
+export default class Http {
+  private axiosInstance: AxiosInstance;
+  private BASE_URL: string;
 
-  constructor(baseURL: string) {
-    this.axiosInstance = axios.create({ baseURL });
+  constructor(BASE_URL: string) {
+    this.BASE_URL = BASE_URL;
+    this.axiosInstance = axios.create({
+      baseURL: BASE_URL,
+    });
   }
 
-  async request(config: RequestConfig) {
+  public async get<T>(endpoint: string): Promise<T> {
     try {
-      const axiosConfig: AxiosRequestConfig = {
-        method: config.method,
-        url: config.url,
-        params: config.query,
-        data: config.body,
-      };
-      const res: AxiosResponse = await this.axiosInstance(axiosConfig);
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      throw err;
+      const response = await this.axiosInstance.get<T>(endpoint);
+      return response.data;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
     }
   }
 }
-
-const http = new Http(BASE_URL || '');
-
-export default http;
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
-
-type RequestConfig = {
-  method: HttpMethod;
-  url?: string;
-  query?: any;
-  body?: any;
-};

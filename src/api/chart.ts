@@ -1,9 +1,8 @@
-import { ChartDataType } from '../types';
-import http from './http';
+import Http from './http';
+import { DataItemType } from '../types';
 
-export async function getChartData(): Promise<ChartDataType[]> {
-  const response = await http.request({ method: 'GET', url: '/response' });
-  return response;
-}
+const searchHttp = new Http(`${process.env.REACT_APP_DEV_URL}`);
 
-export {};
+export const getChartData = async (): Promise<{ [date: string]: DataItemType }> => {
+  return await searchHttp.get<any>('/response');
+};
