@@ -1,8 +1,9 @@
 export type ChartDataType = {
-  [date: string]: DataItem;
+  date: string;
+  value: DataItemType;
 };
 
-type DataItem = {
+export type DataItemType = {
   id: string;
   value_area: number;
   value_bar: number;
