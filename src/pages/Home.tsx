@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { getChartData } from '../api/chart';
 import { ChartDataType } from '../types';
 import styled from 'styled-components';
+import ComplexChart from '../components/ComplexChart';
 
 export default function Chart() {
   const [data, setData] = useState<ChartDataType[]>(() => []);
   useEffect(() => {
     const fetchData = async () => {
       const res = await getChartData();
-      setData(res);
+      const dataArray = Object.entries(res).map(([date, value]) => ({ date, value }));
+      setData(dataArray);
     };
     fetchData();
   }, []);
@@ -17,9 +19,13 @@ export default function Chart() {
 
   return (
     <StyledLayout>
-      <canvas id='chart'></canvas>
+      <ComplexChart chartData={data} />
     </StyledLayout>
   );
 }
 
-const StyledLayout = styled.main``;
+const StyledLayout = styled.main`
+  position: relative;
+  margin: auto,
+  width: 80vw,
+`;

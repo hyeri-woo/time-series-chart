@@ -1,5 +1,5 @@
 import App from '../App';
-import Chart from '../pages/Chart';
+import Home from '../pages/Home';
 import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter([
@@ -9,7 +9,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Chart />,
+        element: <Home />,
       },
     ],
   },
