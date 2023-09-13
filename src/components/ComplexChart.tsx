@@ -90,17 +90,37 @@ export default function ComplexChart({ chartData, addOrRemoveKeyword, checkIsCli
           },
         },
       },
+      legend: {
+        labels: {
+          color: 'white',
+        },
+      },
     },
     onClick: (e: any) => {
       addOrRemoveKeyword(e?.chart?.tooltip?.title[1]);
     },
     scales: {
+      x: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.3)',
+        },
+        ticks: {
+          color: 'white',
+        },
+      },
       'bar-y-axis': {
         type: 'linear' as const,
         display: true,
         position: 'left' as const,
         grid: {
+          color: 'rgba(255, 255, 255, 0.3)',
           drawOnChartArea: false,
+        },
+        ticks: {
+          color: 'white',
+        },
+        border: {
+          display: false,
         },
       },
       'area-y-axis': {
@@ -109,6 +129,15 @@ export default function ComplexChart({ chartData, addOrRemoveKeyword, checkIsCli
         fill: true,
         position: 'right' as const,
         max: roundAndMultipy(areaData, 100, 2),
+        grid: {
+          color: 'rgba(255, 255, 255, 0.3)',
+        },
+        ticks: {
+          color: 'white',
+        },
+        border: {
+          display: false,
+        },
       },
     },
   };
