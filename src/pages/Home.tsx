@@ -41,7 +41,7 @@ export default function Chart() {
   }, []);
 
   const regionData = Array.from(new Set(data.map((item) => item.value.id)));
-  const date = data[0].date.slice(0, 10) || '';
+  const date = data[0]?.date.slice(0, 10) || '';
 
   return (
     <StyledLayout>
@@ -49,7 +49,7 @@ export default function Chart() {
         <StyledHeader>
           <h1 className='header'>Value of Area and Bar Depends on Regions on {date}</h1>
         </StyledHeader>
-        <ComplexChart chartData={data} checkIsClick={checkIsClick} />
+        <ComplexChart chartData={data} addOrRemoveKeyword={addOrRemoveKeyword} checkIsClick={checkIsClick} />
       </StyledSection>
       <StyledFilter>
         <FilterButton
@@ -74,6 +74,7 @@ const StyledSection = styled.section`
   border: 1px solid var(--color-white70);
   background: var(--color-white20);
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
   canvas {
     padding: 10px;
     color: white;

@@ -21,17 +21,18 @@ ChartJS.register(
   PointElement,
   LineElement,
   Legend,
-  Tooltip,
+  [Tooltip],
   LineController,
   BarController,
 );
 
 interface ComplexChartProps {
   chartData: ChartDataType[];
+  addOrRemoveKeyword: (region: string) => void;
   checkIsClick: (region: string) => boolean;
 }
 
-export default function ComplexChart({ chartData, checkIsClick }: ComplexChartProps) {
+export default function ComplexChart({ chartData, addOrRemoveKeyword, checkIsClick }: ComplexChartProps) {
   const labelData = chartData.map((item) => item.date.slice(-8));
   const areaData = chartData.map((item) => item.value.value_area);
   const barData = chartData.map((item) => item.value.value_bar);
@@ -53,6 +54,7 @@ export default function ComplexChart({ chartData, checkIsClick }: ComplexChartPr
         label: 'value_area',
         borderColor: '#438BFF',
         backgroundColor: '#438BFF',
+        hoverBackgroundColor: '#2d5af0',
         borderWidth: 1,
         fill: true,
         data: areaData,
@@ -62,6 +64,7 @@ export default function ComplexChart({ chartData, checkIsClick }: ComplexChartPr
         type: 'bar' as const,
         label: 'valur_bar',
         backgroundColor: barColorData,
+        hoverBackgroundColor: barColor.selected,
         data: barData,
         borderColor: 'white',
         borderWidth: 0,
@@ -73,11 +76,23 @@ export default function ComplexChart({ chartData, checkIsClick }: ComplexChartPr
   const options = {
     responsive: true,
     maintainAspectRatio: true,
-    tooltips: {
-      mode: 'index',
+    interaction: {
+      intersect: false,
+      mode: 'index' as const,
     },
-    legend: {
-      fontColor: 'white',
+    plugins: {
+      tooltip: {
+        mode: 'index' as const,
+        intersect: false,
+        callbacks: {
+          afterTitle: (context: any) => {
+            return regionData[context[0].dataIndex];
+          },
+        },
+      },
+    },
+    onClick: (e: any) => {
+      addOrRemoveKeyword(e?.chart?.tooltip?.title[1]);
     },
     scales: {
       'bar-y-axis': {
@@ -97,5 +112,6 @@ export default function ComplexChart({ chartData, checkIsClick }: ComplexChartPr
       },
     },
   };
+
   return <Chart type='bar' data={data} options={options} height='100px' />;
 }
