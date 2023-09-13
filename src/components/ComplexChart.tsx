@@ -107,6 +107,9 @@ export default function ComplexChart({ chartData, addOrRemoveKeyword, checkIsCli
         ticks: {
           color: 'white',
         },
+        border: {
+          color: 'rgba(255, 255, 255, 0.3)',
+        },
       },
       'bar-y-axis': {
         type: 'linear' as const,
