@@ -1,46 +1,3 @@
-// // import React from "react";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-// } from 'chart.js';
-// // import { Line } from 'react-chartjs-2';
-// import { ChartDataType } from '../types';
-
-// ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-// interface ComplexChartProps {
-//   chartData: ChartDataType[];
-// }
-
-// export default function ComplexChart({ chartData }: ComplexChartProps) {
-//   const labelData = chartData.map((item) => item.date);
-//   const areaData = chartData.map((item) => item.value.value_area);
-//   const barData = chartData.map((item) => item.value.value_bar);
-//   console.log(labelData, areaData, barData);
-//   const complexData = {
-//     labels: labelData,
-//     datasets: [
-//       {
-//         type: 'bar',
-//         label: 'bar dataset',
-//         data: barData,
-//       },
-//       {
-//         type: 'line',
-//         label: 'line dataset',
-//         data: areaData,
-//       },
-//     ],
-//   };
-//   return <ChartJS data={complexData} />;
-// }
-
 import {
   Chart as ChartJS,
   LinearScale,
@@ -55,6 +12,7 @@ import {
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
 import { ChartDataType } from '../types';
+import { roundAndMultipy } from '../lib/utils';
 
 ChartJS.register(
   LinearScale,
@@ -70,12 +28,22 @@ ChartJS.register(
 
 interface ComplexChartProps {
   chartData: ChartDataType[];
+  checkIsClick: (region: string) => boolean;
 }
 
-export default function ComplexChart({ chartData }: ComplexChartProps) {
-  const labelData = chartData.map((item) => item.date);
+export default function ComplexChart({ chartData, checkIsClick }: ComplexChartProps) {
+  const labelData = chartData.map((item) => item.date.slice(-8));
   const areaData = chartData.map((item) => item.value.value_area);
   const barData = chartData.map((item) => item.value.value_bar);
+  const regionData = chartData.map((item) => item.value.id);
+  const barColor = { default: 'rgba(255, 255, 255, 0.3)', selected: 'rgba(255, 255, 255, 0.8)' };
+  const barColorData = regionData.map((region) => {
+    if (checkIsClick(region)) {
+      return barColor.selected;
+    } else {
+      return barColor.default;
+    }
+  });
 
   const data = {
     labels: labelData,
@@ -83,8 +51,9 @@ export default function ComplexChart({ chartData }: ComplexChartProps) {
       {
         type: 'line' as const,
         label: 'value_area',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 2,
+        borderColor: '#438BFF',
+        backgroundColor: '#438BFF',
+        borderWidth: 1,
         fill: true,
         data: areaData,
         yAxisID: 'area-y-axis',
@@ -92,10 +61,10 @@ export default function ComplexChart({ chartData }: ComplexChartProps) {
       {
         type: 'bar' as const,
         label: 'valur_bar',
-        backgroundColor: 'rgb(75, 192, 192)',
+        backgroundColor: barColorData,
         data: barData,
         borderColor: 'white',
-        borderWidth: 2,
+        borderWidth: 0,
         yAxisID: 'bar-y-axis',
       },
     ],
@@ -103,19 +72,13 @@ export default function ComplexChart({ chartData }: ComplexChartProps) {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
-    // height: '500px',
-    // interaction: {
-    //   mode: 'index' as const,
-    //   intersect: false,
-    // },
-    // stacked: false,
-    // plugins: {
-    //   title: {
-    //     display: true,
-    //     text: 'Chart.js Line Chart - Multi Axis',
-    //   },
-    // },
+    maintainAspectRatio: true,
+    tooltips: {
+      mode: 'index',
+    },
+    legend: {
+      fontColor: 'white',
+    },
     scales: {
       'bar-y-axis': {
         type: 'linear' as const,
@@ -130,10 +93,9 @@ export default function ComplexChart({ chartData }: ComplexChartProps) {
         display: true,
         fill: true,
         position: 'right' as const,
-        max: Math.max(...areaData) * 2,
+        max: roundAndMultipy(areaData, 100, 2),
       },
     },
   };
-
-  return <Chart type='bar' data={data} options={options} height='500px' />;
+  return <Chart type='bar' data={data} options={options} height='100px' />;
 }
